@@ -1,0 +1,57 @@
+<title>Network help</title>
+
+<h1>1000-Introduction</h1>
+<br>
+<b>INTRODUCTION TO Network in SymbOS</b><br>
+<br>
+When you're ready to go beyond the home- computer on your desk, use this chapter to learn the basics of working on a network.You will learn how to set up your home- computer to use a network,and how you and your co-workers can share bits on the network using SymbOS. A network is a group of computers connected to each other or to a central server so they can share resourcess. There are two major steps in setting up a network: setting up your hardware and setting up your software. Before setting up the software, be sure your network hardware is correctly installed. This includes the network adapter and cables. TCP/IP is one of the most common networking protocols in use and is required for telnet, ftp, webaccess, and a number of other networked operations.<br>
+<br>
+<br>
+
+<h2>1100-Feature overview</h2>
+<br>
+<b>FEATURES</b><br>
+<br>
+If you want to setup networking in SymbOS be sure your home- computer is running SymbOS network daemon. Start the network daemon (netd-XXXX.exe) if it is not started automatically during SymbOS startup. Please check the status of your network. This could be for example:<br>
+<br>
+-Not detected<br>
+-No device<br>
+-No IP Setup<br>
+-Connected<br>
+<br>
+<h2>1200-No Device found?</h2>
+<br>
+<b>Hardware</b><br>
+If the status is (No Device) go to the driver tab and set the correct settings for your device. Depending on which hardware is installed choose the correct settings for your network hardware. When using a MSX model select the correct SLOT number where your network adapter is plugged in. If you are using a slot expander you have to define the SUBSLOT as well. After selecting the correct SLOT/SUBSLOT press the Apply button. The networkdaemon will try to communicate with the hardware. When successfully the MAC address is obtained from the ROM (when defined in the ROM). The status of the network daemon will change afterwards in theStatus TAB.<br>
+<br>
+<h2>1300-DHCP or Fixed</h2>
+<br>
+<b>DHCP or FIXED IP SETUP</b><br>
+<br>There are 2 options to setup an IP address. You can get IP settings assigned automatically if your network supports DHCP capability or you need to define astatic IP. You need to ask your network administrator for the appropriate IP settings. Beware that you need a default gateway if you want to connect to systems outside your own network (alsocalled subnet broadcast domain)<br>
+<br>
+<h2>1400-DNS</h2>
+<br>
+<b>DNS</b><br>
+<br>A DNS (Dynamic Name Server) is needed to translate hostnames to IP addresses.You can choose to obtain a DNS server addresses automatically or to use a static DNS server. Most of the time the DNS server is the same IP as your gateway.You need to ask your network administrator for the appropriate IP settings if you are not sure.You can define a max of 2 domain name servers.<br>
+<br>
+<b>If your internal DNS is not working try google DNS.</b><br>
+<br>
+<h2>1500-Network Enabled</h2>
+<br>
+<b>Network general</b><br>
+<br>After successfully enabled the network daemon in SymbOS you are able to use the TCP network applications with your home- computer like SYMTEL (telnet) or play a network game like Battle Ship. SymbOS can handle multiple connections (up to 4). Unify, (SymbOS IDE development Studio for MicrosoftWindows),which is developed by Trebmint, supports network as well.Now everyone can make network applications/games with less knowledge about networking using Unify.<br>
+<br>
+<h2>1600-Network console applications</h2>
+<br>
+<b>Network Applications</b><br>
+<br>After successfully enabled the network daemon in SymbOS you are able to use the TCP network applications with your home- computer like SYMTEL (telnet) or play a network game like Battle Ship. SymbOS can handle multiple connections (up to 4). Unify, (SymbOS IDE development Studio for MicrosoftWindows),which is developed by Trebmint, supports network as well.Now everyone can make network applications/games with less knowledge about networking using Unify.<br>
+<br>
+<br>Some network supported applications:<br>
+<br>
+<b>-netstat<br>
+-telnet<br>
+-battle ship (Game)<br>
+-Symple messenger (Chat program)<br>
+-SymBUS (Remote control)</b><br>
+<br>
+<br>
