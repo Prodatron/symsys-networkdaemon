@@ -59,6 +59,7 @@ w51_com_ptimer  equ #28 ;[1] PPP LCP Request Timer
 w51_com_pmagic  equ #29 ;[1] PPP LCP Magic number
 w51_com_uipr    equ #2a ;[4] Unreachable IP Address
 w51_com_uport   equ #2e ;[2] Unreachable Port
+w51_com_physr   equ #3c ;[1] PHY Status (W5100S)
 
 ;W5100 socket specific registers (#0sxx, s=4-7)
 w51_soc_mr      equ #00 ;[1] Socket n Mode
@@ -404,6 +405,8 @@ w51uop0 add 4
 w51uop  add 4
         db #fd:ld h,a
         ld a,(net_status)
+        cp 2                            ;@@ addition by d_kef
+        jr z,w51uop1                    ;@@ if DHCP request then open socket
         inc a
         scf
         ld a,neterrnip

@@ -1,6 +1,6 @@
 nolist
 
-DRIVER      equ 0    ;0=localhost, 1=denyonet, 2=gr8net, 3=m4cpc
+DRIVER      equ 0    ;0=localhost, 1=denyonet, 2=gr8net, 3=m4cpc, 4=net4cpc
 low_buflen  equ 4096
 
 org #1000

@@ -69,7 +69,8 @@ m4c_sta_rx      db 0            ;RX "led" status
 M4C_PORTDATA        equ #fe00
 M4C_PORTACK         equ #fc00
 
-M4C_BUFSIZE         equ #0800
+M4C_BUFSIZE_IN      equ #0800
+M4C_BUFSIZE_OUT     equ 1400
 
 M4C_CMDSOCKET       equ #4331
 M4C_CMDCONNECT      equ #4332
@@ -418,11 +419,11 @@ m4cttx  push ix
         cp 2                    ;still sending -> don't send more data until sending has been finished
         jr z,m4cttx2
         pop bc
-        ld hl,M4C_BUFSIZE
+        ld hl,M4C_BUFSIZE_OUT
         or a
         sbc hl,bc
         jr nc,m4cttx1
-        ld bc,M4C_BUFSIZE       ;don't send more than buffer-size
+        ld bc,M4C_BUFSIZE_OUT   ;don't send more than buffer-size
 m4cttx1 ld (m4cttxcmd+4),bc
         push bc
         ld hl,m4cttxcmd
@@ -757,26 +758,53 @@ m4csta0 add a:add a:add a:add a
         ei
         ld bc,(m4crspbuf+2)
         ld a,b
-        cp M4C_BUFSIZE/256
+        cp M4C_BUFSIZE_IN/256
         jr c,m4csta1
-        ld bc,M4C_BUFSIZE
+        ld bc,M4C_BUFSIZE_IN
 m4csta1 ld a,(m4crspbuf+0)
         or a
         ret
 
 ;### M4CSND -> send data from application memory to the M4
-;### Input      HL=address, E=bank, BC=length (1-4095)
+;### Input      HL=address, E=bank, BC=length (1<=BC<=M4C_BUFSIZE_OUT<16384)
 ;### Output     DI
 ;### Destroyed  AF,BC,DE,HL,IX,IY
 m4csnd  ld a,m4c_sta_delay
         ld (m4c_sta_tx),a
-        ld a,e
+        push hl
+        res 7,h
+        res 6,h
+        add hl,bc
+        bit 6,h                 ;check if still in same 16K area
+        jr nz,m4csnd1           ;no -> transfer two parts
+        pop hl
+        jr m4csnd3              ;yes -> transfer everything in one go
+
+m4csnd1 res 6,h                 ;HL=(HL+BC) mod #4000=length behind 16K boundary=len_part2
+        ld (m4csnd2+1),hl       ;store len_part2
+        ld a,l:ld l,c:ld c,a
+        ld a,h:ld h,b:ld b,a    ;HL=len_total, BC=len_part2
+        sbc hl,bc               ;(cf=0 here) -> HL=len_total-len_part2=len_part1
+        ld c,l:ld b,h           ;BC=len_part1
+        pop hl                  ;HL=adr
+
+        push bc
+        push hl
+        push de
+        call m4csnd3                ;** transfer part1
+        pop de
+        pop hl
+        pop bc
+        add hl,bc               ;HL=adr+len_part1
+m4csnd2 ld bc,0                 ;BC=len_part2
+
+m4csnd3 ld a,e                      ;** transfer part2/all
         add a:add a:add a:add a
         or b
         db #fd:ld l,c
-        db #fd:ld h,a               ;iy=bank, length
-        ex de,hl                    ;de=address
-        ld ix,M4C_PORTDATA          ;ix=port
+        db #fd:ld h,a           ;iy=bank, length
+        ex de,hl                ;de=address
+        ld ix,M4C_PORTDATA      ;ix=port
         ld hl,jmp_iomout
         rst #28
         ret
