@@ -69,7 +69,7 @@ m4c_sta_rx      db 0            ;RX "led" status
 M4C_PORTDATA        equ #fe00
 M4C_PORTACK         equ #fc00
 
-M4C_BUFSIZE_IN      equ #0800
+M4C_BUFSIZE_IN      equ 1280 ;#0800
 M4C_BUFSIZE_OUT     equ 1400
 
 M4C_CMDSOCKET       equ #4331
