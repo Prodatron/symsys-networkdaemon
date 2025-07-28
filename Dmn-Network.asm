@@ -1736,6 +1736,8 @@ tcprcv  push bc
         ld c,l
         ld b,h                  ;bc=min(remaining, requested)
 tcprcv1 pop hl
+        ld a,c:or b
+        jr z,tcprcv4
         push bc
         call netdin
         push iy
@@ -1746,11 +1748,14 @@ tcprcv2 call lowtrx
         pop bc
         ld (iy+sckdatrcv+0),l
         ld (iy+sckdatrcv+1),h
-        ld a,l
+tcprcv3 ld a,l
         or h
         ret nz
         res 7,(iy+sckdatsta)    ;no data left -> reset received-flag
         ret
+tcprcv4 ld l,(iy+sckdatrcv+0)
+        ld h,(iy+sckdatrcv+1)
+        jr tcprcv3
 
 ;### TCPSND -> TCP send to connection
 ;### Input      A=socket, BC=length, E,HL=memory
