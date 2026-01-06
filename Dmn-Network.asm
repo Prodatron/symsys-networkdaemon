@@ -211,8 +211,9 @@ neticnid    db 0            ;systray icon ID
 
 prgprz  call SySystem_HLPINI
         call prgdbl
+        call prglng
         call cfglod
-if DRIVER=3
+if M4BOARD=1
         ld a,5
         call lowini
         ld a,6
@@ -297,6 +298,32 @@ prgtry1 ld a,(App_BnkNum)
         ld (stawinvis),a
         ret
 
+;### PRGLNG -> load language pack
+prglnge db ".exe",0
+
+prglng  ld hl,(App_BegCode)
+        ld de,App_BegCode
+        dec h
+        add hl,de               ;HL=code area end=path
+        push hl
+prglng1 ld a,(hl)
+        inc hl
+        or a
+        jr nz,prglng1
+        ld bc,-9
+        add hl,bc
+        ex de,hl
+        ld hl,prglnge
+        ld bc,5
+        ldir
+        pop de
+        ld a,(App_BnkNum)
+        ld c,a
+        ld hl,texts_int
+        ld ix,256*0+9           ;default language=9 (english), pack=0
+        ld iyl,0                ;language-file version 0
+        jp SySystem_LNGLOD
+
 ;### PRGDBL -> Check,if program is already running
 prgdbln db "Network Daem"
 prgdbl  xor a
@@ -346,8 +373,8 @@ staupdcnt   db 1    ;update counter (only show updates every 50 ticks)
 staupdflg   db 0    ;bit0=sockets changed, bit1=incoming data changed, bit2=outgoing data changed, bit3=status changed
 
 staupdtab   dw statxttxc0,statxttxc1,statxttxc2,statxttxc3,statxttxc4
-if DRIVER=3
-            dw statxttxc5,statxttxc6,statxttxc7,statxttxc8,statxttxc9,statxttxc10,statxttxc11
+if M4BOARD=1
+            dw statxttxc5,statxttxc6,statxttxc7,statxttxc8,statxttxc9,statxttxc10,statxttxc10
 endif
 
 stasckcnt   db 0    ;number of current sockets
@@ -356,8 +383,6 @@ stainckby   ds 3    ;in KB
 staoutbyt   ds 4    ;amount of outgoing bytes
 staoutkby   ds 3    ;in KB
 
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 if DRIVER=4
 staupdw51   db 0    ;last w5100s status
 staupdctl   dw 32*4+stawindatc0:db 2*4+5    ;Cable unplugged
@@ -366,8 +391,6 @@ staupdctl   dw 32*4+stawindatc0:db 2*4+5    ;Cable unplugged
             dw 32*2+stawindatc0:db 2*2+5    ;full duplex
             dw 32*0+stawindatc0:db 2*0+5    ;-
             dw 32*3+stawindatc0:db 2*3+5    ;-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 else
 staupdw51   db 0    ;last w5100 status
 staupdctl   dw 32*0+stawindatc0:db 2*0+5    ;TX
@@ -387,7 +410,7 @@ staupdsnw   dw 0    ;new signal/status
 staupd  ld a,(stawinvis)
         or a
         ret z
-if DRIVER=3
+if M4BOARD=1
         ld hl,staupdsic         ;M4Board -> check signal and connection (every 50 frames)
         dec (hl)
         jr nz,staupdi
@@ -521,7 +544,7 @@ staupda inc hl
         ld (hl),a
         set 1,c
 staupdb ld a,c
-elseif DRIVER=3
+elseif M4BOARD=1
         ld a,(staupdsnw)
         ld hl,staupdsig
         cp (hl)
@@ -558,9 +581,6 @@ staupda inc hl
         ld (hl),a
         set 1,c
 staupdb ld a,c
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 elseif DRIVER=4
         db #fd:ld h,0
         call w51rbr:db w51_com_physr       ;check status
@@ -572,8 +592,6 @@ elseif DRIVER=4
 stupd10	or %00000001
 stupd11	rlca                               ;move cable status to bit0
         ld c,a
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 endif
         ld hl,staupdw51
         xor (hl)
@@ -671,7 +689,7 @@ stacfg  ld a,(cfgwinid)
 stacfg1 call SyDesktop_WINTOP
         jp prgprz0
 
-if DRIVER=3
+if M4BOARD=1
 ;### STACON -> re-connect (M4Board)
 stacon  ld a,7
         call lowini
@@ -972,23 +990,11 @@ cfgoky3 ld a,c
         ld (cfg_dnstyp),a
         call cfgini
         call cfgsav
-if DRIVER=3
+if M4BOARD=1
         ld a,7
         call lowini
         xor a
         ld (staupdsta),a
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
-elseif DRIVER=4
-        ld a,(net_status)      ;if no hardware found exit
-        cp 0
-        jr z,cfgoky4
-        ld a,1
-        call netini0
-        call netips
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ ##!!## DOUBLE
-
 else
         ld a,(net_status)
         or a
@@ -1073,7 +1079,7 @@ cfghid  ld hl,cfg_hide
         jp prgprz0
 cfghid1 add a
         inc a
-        add 16
+        add 32
         ld (stamendat1a),a
         ret
 
@@ -1090,7 +1096,7 @@ netini0 ld (net_status),a
         ld hl,staupdflg
         set 3,(hl)
         ret
-elseif DRIVER=3
+elseif M4BOARD=1
 ;### NETINI -> Initializes network hardware (M4CPC)
 netini  xor a
         call netini0
@@ -1109,8 +1115,6 @@ netips  ;...
         call netini0
         jp cfgipr
 
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 elseif DRIVER=4
 ;### NETINI -> Initializes network hardware (Net4CPC)
 netini 	xor a
@@ -1175,7 +1179,6 @@ netips2 ld a,(cfg_dnstyp)
         ld bc,4*2
         ldir
         jp cfgipr
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 else
 ;### NETINI -> Initializes network hardware (W5100 based)
@@ -1332,7 +1335,7 @@ netdou  push af
 
 ;### NETPOL -> polls status and sockets
 netpol  
-if DRIVER=3
+if M4BOARD=1
         call m4cpol
 endif
         ld hl,net_timtic
@@ -1941,7 +1944,7 @@ dnsrsv1 ld a,scktypdns
         pop hl                      ;skip return to NETCMD, answer message will be sent later when DNSRQR has been proceeded
         ret
 
-if DRIVER=3         ;*** HIGH LEVEL BASED (using external function) for M4CPC
+if M4BOARD=1        ;*** HIGH LEVEL BASED (using external function) for M4Board
 
 ;### DNSRQS -> send DNS request
 ;### Input      HL=domain name string (dot separated, 0-terminated), A=socket
@@ -2308,7 +2311,7 @@ dhcbeg  ret
 dhcpol  ld a,-1
         jp netini0
 
-elseif DRIVER=3
+elseif M4BOARD=1
 dhcbeg  ret             ;##!!##
 dhcpol  ld a,-1
         jp netini0
@@ -2330,11 +2333,7 @@ dopt_serverip   equ 54
 dopt_subnetmsk  equ 1
 dopt_router     equ 3
 dopt_dnsserver  equ 6
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 dopt_hostname   equ 12
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 dopt_optoverld  equ 52
 dopt_pad        equ 0
@@ -2661,14 +2660,12 @@ cfgdatver   db 0,1
 elseif DRIVER=3
 cfgdatids   db "M4 CPC ESP8266":    ds 32-14
 cfgdatver   db 1,0
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 elseif DRIVER=4
 cfgdatids   db "Net4CPC W5100S":    ds 32-14
 cfgdatver   db 0,1
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
+elseif DRIVER=5
+cfgdatids   db "M4 EP ESP8266":     ds 32-13
+cfgdatver   db 1,0
 endif
 
 cfgadr  dw cfgdatids,32+2
@@ -2999,9 +2996,17 @@ db #77,#77,#77,#77
 db #77,#77,#77,#77
 db #77,#77,#77,#77
 
+;==============================================================================
+;%%% MULTI LANGUAGE TEXTS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+;==============================================================================
 
-prgtxtoky   db "Ok",0
-prgtxtcnc   db "Cancel",0
+texts_int
+read"Dmn-Network-Texts.asm"
+texts_int_end
+
+list
+texts_int_len   equ texts_int_end-texts_int
+nolist
 
 ;### infobox
 prgtxtinf1  db "Network Daemon for SymbOS",0
@@ -3012,13 +3017,11 @@ prgtxtinf3  db " Copyright <c> 2025 SymbiosiS"
 prgtxtinf0  db 0
 
 ;### status text data
-stamentxt1  db "File",0
-stamentxt2  db "?",0
-stamentxt11 db 6,128,-1:dw menicn_hide        +1:db " Hide on startup",0
-stamentxt12 db 6,128,-1:dw menicn_delete      +1:db " Reset all connections",0
-stamentxt13 db 6,128,-1:dw menicn_quit        +1:db " Quit",0
-stamentxt21 db 6,128,-1:dw menicn_help        +1:db " Index",0
-stamentxt22 db 6,128,-1:dw menicn_about       +1:db " About",0
+stamentxt11 db 6,128,-1:dw menicn_hide        +1:db 7:dw stamentxt11_poi:db 0
+stamentxt12 db 6,128,-1:dw menicn_delete      +1:db 7:dw stamentxt12_poi:db 0
+stamentxt13 db 6,128,-1:dw menicn_quit        +1:db 7:dw stamentxt13_poi:db 0
+stamentxt21 db 6,128,-1:dw menicn_help        +1:db 7:dw stamentxt21_poi:db 0
+stamentxt22 db 6,128,-1:dw menicn_about       +1:db 7:dw stamentxt22_poi:db 0
 
 menicn_hide         db 4,8,7:dw $+7,$+4,28:db 5: db #66,#11,#11,#66, #66,#18,#81,#66, #11,#18,#81,#11, #61,#88,#88,#16, #66,#18,#81,#66, #77,#71,#17,#77, #77,#77,#77,#77
 menicn_delete       db 4,8,7:dw $+7,$+4,28:db 5: db #ff,#66,#66,#ff, #6f,#f6,#6f,#f6, #66,#ff,#ff,#66, #66,#6f,#f6,#66, #66,#ff,#ff,#66, #6f,#f6,#6f,#f6, #ff,#66,#66,#ff
@@ -3026,24 +3029,13 @@ menicn_quit         db 4,8,7:dw $+7,$+4,28:db 5: db #11,#16,#16,#66, #14,#46,#11
 menicn_help         db 4,8,7:dw $+7,$+4,28:db 5: db #66,#1f,#f1,#66, #61,#fc,#cf,#16, #1f,#ff,#fc,#f1, #ff,#fc,#cc,#f1, #ff,#ff,#ff,#18, #1f,#cf,#f1,#81, #61,#ff,#18,#16
 menicn_about        db 4,8,7:dw $+7,$+4,28:db 5: db #66,#10,#07,#66, #66,#10,#07,#66, #66,#66,#66,#66, #61,#00,#07,#66, #66,#10,#07,#66, #66,#10,#07,#66, #61,#00,#00,#76
 
-statxttit   db "Network daemon",0
-statxtbta   db "Hide",0
-statxtbtb   db "Network settings",0
-statxtbtc   db "Apply",0
-
-statxttba1  db "Status",0
-statxttba2  db "TCP/IP",0
-statxttba3  db "Driver",0
-
-statxtfra   db "Network status",0
-
 if DRIVER=0
 statxttxa   db "Adapter: Localhost",0
 elseif DRIVER=1
 statxttxa   db "Adapter: DenYoNet W5100",0
 elseif DRIVER=2
 statxttxa   db "Adapter: GR8NET W5100",0
-elseif DRIVER=3
+elseif M4BOARD=1
 statxttxa   db "Adapter: M4 Board ESP8266",0
 
 statxtrom   db "M4 at ROM "
@@ -3058,13 +3050,10 @@ siggfx3     db 4,16,13,#0F,#0F,#0F,#CF,#0F,#0F,#0F,#ED,#0F,#0F,#6F,#ED,#0F,#0F,#
 siggfx4     db 4,16,13,#0F,#0F,#0F,#CF,#0F,#0F,#0F,#ED,#0F,#0F,#09,#ED,#0F,#0F,#18,#ED,#0F,#0C,#18,#ED,#0F,#0C,#90,#ED,#0E,#04,#90,#ED,#0E,#40,#90,#ED,#02,#40,#90,#ED,#20,#40,#90,#ED,#20,#40,#90,#ED,#20,#40,#90,#ED,#69,#D2,#B4,#69
 siggfx5     db 4,16,13,#0F,#0F,#0F,#03,#0F,#0F,#0F,#21,#0F,#0F,#09,#21,#0F,#0F,#18,#21,#0F,#0C,#18,#21,#0F,#0C,#90,#21,#0E,#04,#90,#21,#0E,#40,#90,#21,#02,#40,#90,#21,#20,#40,#90,#21,#20,#40,#90,#21,#20,#40,#90,#21,#69,#D2,#B4,#69
 
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 elseif DRIVER=4
 statxttxa   db "Adapter: Net4CPC W5100S",0
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 endif
+
 statxttxb   db "(driver version "
             db low_vermaj+48
             db "."
@@ -3073,43 +3062,37 @@ statxttxb   db "(driver version "
 statxttxk   db "Host: "
 cfgbufina   ds 1+16
 
+statxttxd0  db "0",0,0
+statxttxe0  db "0",0,0
+statxttxf0  db "0 KB",0:ds 6
+statxttxg0  db "0 KB",0:ds 6
+
+staslttu    db "-",0
+stasltt0    db "0",0
+stasltt1    db "1",0
+stasltt2    db "2",0
+stasltt3    db "3",0
+
+statxttxi0 ds 16
+statxttxi1 ds 16
+statxttxi2 ds 16
+statxttxj0 ds 16
+statxttxj1 ds 16
+
+statxttxh0  db "DHCP",0
+statxttba2  db "TCP/IP",0
+
 statxttxc0  db "ONLINE",0
 statxttxc1  db "NO DEVICE",0
 statxttxc2  db "NO IP SETUP",0
 statxttxc3  db "DHCP REQUEST",0
 statxttxc4  db "DHCP FAILURE",0
-if DRIVER=3
 statxttxc5  db "IDLE",0
 statxttxc6  db "CONNECTING",0
 statxttxc7  db "WRONG PASSWRD",0
 statxttxc8  db "NO AP FOUND",0
 statxttxc9  db "CON. FAILED",0
-statxttxc10
-statxttxc11 db "UNKNOWN ERROR",0
-endif
-
-statxttxc   db "Status",0
-statxttxd   db "Connections",0  :statxttxd0 db "0",0,0
-statxttxe   db "Maximum",0      :statxttxe0 db "0",0,0
-statxttxf   db "Sent",0         :statxttxf0 db "0 KB",0:ds 6
-statxttxg   db "Received",0     :statxttxg0 db "0 KB",0:ds 6
-
-statxttxh   db "Type",0
-                                 statxttxh0 db "DHCP",0,0
-                                 statxttxh1 db "Manually set",0,0
-statxtfrb   db "IP settings",0
-statxtfrc   db "DNS settings",0
-
-statxtfrd   db "Status",0
-statxtfre   db "DenYoNet Settings",0
-statxtfrf   db "Localhost Settings",0
-statxtfrg   db "GR8NET Settings",0
-statxtfrh   db "M4 Board Settings",0
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
-statxtfri   db "Net4CPC Settings",0
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+statxttxc10 db "UNKNOWN ERROR",0
 
 statxttxl   db "TX",0
 statxttxm   db "Link",0
@@ -3126,53 +3109,11 @@ statxttxw   db "SSID",0
 statxttxx   db "Key",0
 statxttxy   db "Show",0
 statxttxz   db "Connect",0
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 statxttza   db "Cable plugged",0
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
-staslttu    db "-",0
-stasltt0    db "0",0
-stasltt1    db "1",0
-stasltt2    db "2",0
-stasltt3    db "3",0
-
-statxttxi0 ds 16
-statxttxi1 ds 16
-statxttxi2 ds 16
-statxttxj0 ds 16
-statxttxj1 ds 16
 
 ;### config dialogue text data
-cfgtxttit   db "TCP/IP properties",0
-
-cfgtxttba1  db "IP address",0
-cfgtxttba2  db "DNS & Hostname",0
-
-cfgtxtfra   db "     ",0
-
-cfgtxttxa   db "You can get IP settings assigned automatically",0
-cfgtxttxb   db "if your network supports this capability.",0
-cfgtxttxc   db "Otherwise, you need to ask your network admin",0
-cfgtxttxd   db "for the appropriate IP settings.",0
 cfgtxttxe   db ".",0
-cfgtxttxf   db "IP address",0
-cfgtxttxg   db "Subnet mask",0
-cfgtxttxh   db "Default gateway",0
-
-cfgtxttxi   db "Hostname",0
-cfgtxttxj   db "Primary DNS",0
-cfgtxttxk   db "Secondary DNS",0
-
-cfgtxtrda   db "Obtain an IP address automatically",0
-cfgtxtrdb   db "Use the following IP address ",0
-cfgtxtrdc   db "Obtain DNS server addresses automatically",0
-cfgtxtrdd   db "Use the following DNS server addresses ",0
-
-cfgerrtxt0  db "Wrong IP format",0
-cfgerrtxt1  db "Please enter a correct",0
-cfgerrtxt2  db "number between 0 and 255.",0
+cfgtxtfra   db "     ",0
 
 cfgbufia0   ds 1+3  ;IP address
 cfgbufia1   ds 1+3
@@ -3200,7 +3141,7 @@ stabufim2   ds 1+2
 stabufim3   ds 1+2
 stabufim4   ds 1+2
 stabufim5   ds 1+2
-if DRIVER=3
+if M4BOARD=1
 stabufia0   ds 1+32 ;ssid/password
 stabufia1   ds 1+65
 endif
@@ -3233,28 +3174,23 @@ elseif DRIVER=1
 stawingrpc  db 30,0:dw stawindatc,0,0,4*256+3,0,0,2
 elseif DRIVER=2
 stawingrpc  db 30,0:dw stawindatc,0,0,4*256+3,0,0,2
-elseif DRIVER=3
+elseif M4BOARD=1
 stawingrpc  db 25,0:dw stawindatc,0,0,4*256+3,0,0,2
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 elseif DRIVER=4
 stawingrpc  db 30,0:dw stawindatc,0,0,4*256+3,0,0,2
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 endif
 
 stamendat   dw 2, 1+4,stamentxt1,stamendat1,0,     1+4,stamentxt2,stamendat2,0
 stamendat1  dw 4
-stamendat1a dw    17,stamentxt11,cfghid,0,   1+8,#0000,0,0, 17,stamentxt12,netres,0, 17,stamentxt13,prgend,0    ;hide to systray/-/reset all connections/quit
-stamendat2  dw 3, 17,stamentxt21,prghlp,0,   1+8,#0000,0,0, 17,stamentxt22,prginf,0                             ;index/-/about
+stamendat1a dw    33,stamentxt11,cfghid,0,   1+8,#0000,0,0, 33,stamentxt12,netres,0, 33,stamentxt13,prgend,0    ;hide to systray/-/reset all connections/quit
+stamendat2  dw 3, 33,stamentxt21,prghlp,0,   1+8,#0000,0,0, 33,stamentxt22,prginf,0                             ;index/-/about
 
 stawindata                                                              ;*** STATUS
 ; onclick         type   property   xpos   ypos   xlen   ylen
 dw      0,  255*256+ 0,         2,     0,     0, 10000, 10000, 0    ;background
 dw statab,  255*256+20, stactltba,     0,     2,   205,    11, 0    ;tab
-dw stahid,  255*256+16, statxtbta,     3,   107,    36,    12, 0    ;button hide
-dw stacfg,  255*256+16, statxtbtb,    69,   107,    83,    12, 0    ;button settings
+dw stahid,  255*256+16, statxtbta,     3,   107,    56,    12, 0    ;button hide
+dw stacfg,  255*256+16, statxtbtb,    65,   107,    87,    12, 0    ;button settings
 dw      0,  255*256+10, prgicn16c2,    3,    18,    24,    24, 0    ;icon
 dw      0,  255*256+ 1, stactltxa,    35,    18,    60,     8, 0    ;display hardware driver
 dw      0,  255*256+ 1, stactltxb,    35,    26,    60,     8, 0    ;display hardware driver
@@ -3275,8 +3211,8 @@ stawindatb                                                              ;*** TCP
 ; onclick         type   property   xpos   ypos   xlen   ylen
 dw      0,  255*256+ 0,         2,     0,     0, 10000, 10000, 0    ;background
 dw statab,  255*256+20, stactltba,     0,     2,   205,    11, 0    ;tab
-dw stahid,  255*256+16, statxtbta,     3,   107,    36,    12, 0    ;button hide
-dw stacfg,  255*256+16, statxtbtb,    69,   107,    83,    12, 0    ;button settings
+dw stahid,  255*256+16, statxtbta,     3,   107,    56,    12, 0    ;button hide
+dw stacfg,  255*256+16, statxtbtb,    65,   107,    87,    12, 0    ;button settings
 dw      0,  255*256+ 3, stactlfrb,     0,    16,   155,    49, 0    ;frame IP
 dw      0,  255*256+ 1, stactltxh,    10,    26,    60,     8, 0    ;description type
 dw      0,  255*256+ 1
@@ -3300,8 +3236,8 @@ stawindatc                                                              ;*** DRI
 ; onclick         type   property   xpos   ypos   xlen   ylen
 dw      0,  255*256+ 0,         2,     0,     0, 10000, 10000, 0    ;background
 dw statab,  255*256+20, stactltba,     0,     2,   205,    11, 0    ;tab
-dw stahid,  255*256+16, statxtbta,     3,   107,    36,    12, 0    ;button hide
-dw stacfg,  255*256+16, statxtbtb,    69,   107,    83,    12, 0    ;button settings
+dw stahid,  255*256+16, statxtbta,     3,   107,    56,    12, 0    ;button hide
+dw stacfg,  255*256+16, statxtbtb,    65,   107,    87,    12, 0    ;button settings
 dw      0,  255*256+ 3, stactlfrd,     0,    16,   155,    33, 0    ;frame Status
 
 if DRIVER=0         ;*** LOCALHOST **************
@@ -3379,7 +3315,7 @@ dw      0,  255*256+32, stactlim4,    70,    85,    14,    12, 0    ;input mac-4
 dw      0,  255*256+32, stactlim5,    85,    85,    14,    12, 0    ;input mac-5
 dw staapl,  255*256+16, statxtbtc,   109,    85,    36,    12, 0    ;button apply
 
-elseif DRIVER=3     ;*** M4CPC ******************
+elseif M4BOARD=1    ;*** M4BOARD ****************
 
 dw      0,  255*256+10
 stawindatc0 dw          stactllg0,     9,    27,     6,     6, 0    ;display     TX
@@ -3408,8 +3344,6 @@ stactltx0   dw statxtrom,2+4+256
 
 cfgsf2flg   db 0 ;g9k flag
 
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 elseif DRIVER=4     ;*** Net4CPC ***************
 ; onclick         type   property   xpos   ypos   xlen   ylen
 dw      0,  255*256+64
@@ -3438,7 +3372,6 @@ dw      0,  255*256+32, stactlim3,    55,    85,    14,    12, 0    ;input mac-3
 dw      0,  255*256+32, stactlim4,    70,    85,    14,    12, 0    ;input mac-4
 dw      0,  255*256+32, stactlim5,    85,    85,    14,    12, 0    ;input mac-5
 dw staapl,  255*256+16, statxtbtc,   109,    85,    36,    12, 0    ;button apply
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 endif
 
@@ -3593,11 +3526,7 @@ stactlfre   dw statxtfre,2+4
 stactlfrf   dw statxtfrf,2+4
 stactlfrg   dw statxtfrg,2+4
 stactlfrh   dw statxtfrh,2+4
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 stactlfri   dw statxtfri,2+4
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 stactltxa   dw statxttxa ,2+4
 stactltxb   dw statxttxb ,2+4
@@ -3632,11 +3561,7 @@ stactltxr   dw statxttxr,2+4
 stactltxs   dw statxttxs,2+4
 stactltxt   dw statxttxt,2+4
 stactltxu   dw statxttxu,2+4
-
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-;@               addition by d_kef                                            @
 stactltza   dw statxttza,2+4
-;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 stactlim0   dw stabufim0,0,0,0,0,2:db 0
 stactlim1   dw stabufim1,0,0,0,0,2:db 0
@@ -3645,7 +3570,7 @@ stactlim3   dw stabufim3,0,0,0,0,2:db 0
 stactlim4   dw stabufim4,0,0,0,0,2:db 0
 stactlim5   dw stabufim5,0,0,0,0,2:db 0
 
-if DRIVER=3
+if M4BOARD=1
 stactltxv   dw statxttxv,2+4
 stactltxw   dw statxttxw,2+4
 stactltxx   dw statxttxx,2+4

@@ -68,6 +68,7 @@ use_SySystem_PRGSRV     equ 1   ;Manages shared services or finds applications
 use_SySystem_SYSWRN     equ 1   ;Opens an info, warning or confirm box
 use_SySystem_SELOPN     equ 0   ;Opens the file selection dialogue
 use_SySystem_HLPOPN     equ 0   ;HLP file handling
+use_SySystem_LNGLOD     equ 1   ;Loads a text pack from a language file
 
 ;*** DESKTOP MANAGER LIBRARY USAGE
 use_SyDesktop_WINOPN    equ 1   ;Opens a new window
