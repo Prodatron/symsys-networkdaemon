@@ -1729,7 +1729,6 @@ tcprcv  push bc
         cp sckstates
         ld a,neterrtes
         ret c
-        ld a,d
         push hl
         ld l,(iy+sckdatrcv+0)
         ld h,(iy+sckdatrcv+1)
@@ -1744,6 +1743,7 @@ tcprcv1 pop hl
         push bc
         call netdin
         push iy
+        ld a,d
 tcprcv2 call lowtrx
         pop iy
         ld l,c
@@ -3001,7 +3001,7 @@ db #77,#77,#77,#77
 ;==============================================================================
 
 texts_int
-read"Dmn-Network-Texts.asm"
+read"Dmn-Network-i18n.asm"
 texts_int_end
 
 list
@@ -3437,7 +3437,7 @@ dw      0,  255*256+ 0,         2,     0,     0, 10000, 10000, 0    ;background
 dw cfgtab,  255*256+20, cfgctltba,     0,     2,   205,    11, 0    ;tab
 dw cfgoky,  255*256+16, prgtxtoky,    99,   140,    50,    12, 0    ;button ok
 dw cfgcnc,  255*256+16, prgtxtcnc,   152,   140,    50,    12, 0    ;button cancel
-dw      0,  255*256+ 1, cfgctltxi,    40,    32,   194,     8, 0    ;description hostname
+dw      0,  255*256+ 1, cfgctltxi,    10,    32,    72,     8, 0    ;description hostname
 dw      0,  255*256+32, cfgctlina,    86,    30,    89,    12, 0    ;input hostname
 dw      0,  255*256+ 3, cfgctlfra,     0,    74,   205,    50, 0    ;frame
 dw      0,  255*256+18, cfgctlrdc,    10,    60,   185,     8, 0    ;radio c
@@ -3471,7 +3471,7 @@ cfgctltxe   dw cfgtxttxe,2+4
 cfgctltxf   dw cfgtxttxf,2+4
 cfgctltxg   dw cfgtxttxg,2+4
 cfgctltxh   dw cfgtxttxh,2+4
-cfgctltxi   dw cfgtxttxi,2+4
+cfgctltxi   dw cfgtxttxi,2+4+256
 cfgctltxj   dw cfgtxttxj,2+4
 cfgctltxk   dw cfgtxttxk,2+4
 

@@ -148,4 +148,4 @@ cfgerrtxt1_eng  db "Please enter a correct",0
 cfgerrtxt2_eng  db "number between 0 and 255.",0
 
 ;### RESERVE
-ds 50
+ds 80

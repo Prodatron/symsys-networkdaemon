@@ -1,6 +1,6 @@
 {
     "asm": {
-        "0": "Dmn-Network-Texts.asm"
+        "0": "Dmn-Network-i18n.asm"
     },
     "csv": "Dmn-Network-i18n.csv",
     "lng": "f:/symbos/netd.lng"

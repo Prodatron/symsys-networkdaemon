@@ -1,53 +1,53 @@
-labels,ENG,DEU,NLD
-### pack0,51,1029
-prgtxtoky,Ok,Ok,OK
-prgtxtcnc,Cancel,Abbruch,Annuleer
-stamentxt1,File,Datei,Bestand
-stamentxt2,?,?,?
-stamentxt11, Hide on startup, Beim Start ausblenden, Verbergen bij opstarten
-stamentxt12, Reset all connections, Alle Verbindungen trennen, Alle verbindingen resetten
-stamentxt13, Quit, Beenden, Afsluiten
-stamentxt21, Index, Hilfethemen, Index
-stamentxt22, About, Info, Over
-statxttit,Network daemon,Network Daemon,Netwerkdaemon
-statxtbta,Hide,Ausblenden,Verbergen
-statxtbtb,Network settings,Einstellungen,Netwerkinstellingen
-statxtbtc,Apply,Überneh.,Toepassen
-statxttba1,Status,Status,Status
-statxttba3,Driver,Treiber,Stuurprogramma
-statxtfra,Network status,Netzwerk Status,Netwerkstatus
-statxttxc,Status,Status,Status
-statxttxd,Connections,Verbindungen,Verbindingen
-statxttxe,Maximum,Maximal,Maximum
-statxttxf,Sent,Gesendet,Verzonden
-statxttxg,Received,Empfangen,Ontvangen
-statxttxh,Type,Typ,Type
-statxttxh1,Manually set,Manuell gesetzt,Handmatig
-statxtfrb,IP settings,IP Einstellungen,IP-instellingen
-statxtfrc,DNS settings,IP Einstellungen,DNS-instellingen
-statxtfrd,Status,Status,Status
-statxtfre,DenYoNet Settings,DenYoNet Einstellungen,DenYoNet-instellingen
-statxtfrf,Localhost Settings,Localhost Einstellungen,Localhost-instellingen 
-statxtfrg,GR8NET Settings,GR8NET Einstellungen,GR8NET-instellingen
-statxtfrh,M4 Board Settings,M4 Board Einstellungen,M4 Board-instellingen
-statxtfri,Net4CPC Settings,Net4CPC Einstellungen,Net4CPC-instellingen
-cfgtxttit,TCP/IP properties,TCP/IP Eigenschaften,TCP/IP-eigenschappen
-cfgtxttba1,IP address,IP Adresse,IP-adres
-cfgtxttba2,DNS & Hostname,DNS & Hostname,DNS & Hostnaam
-cfgtxttxa,You can get IP settings assigned automatically,IP Adressen können automatisch zugewiesen,IP-instellingen kunnen automatisch worden
-cfgtxttxb,if your network supports this capability.,werden. Wenn das Netzwerk dies nicht,toegewezen als je netwerk dit ondersteunt.
-cfgtxttxc,"Otherwise, you need to ask your network admin",unterstützt muß die korrekte IP-Einstellung,Anders vraag je je netwerkbeheerder
-cfgtxttxd,for the appropriate IP settings.,beim Netzwerk-Administrator erfragt werden.,om de juiste IP-instellingen.
-cfgtxttxf,IP address,IP Adresse,IP-adres
-cfgtxttxg,Subnet mask,Subnetz Maske,Subnet
-cfgtxttxh,Default gateway,Gateway,Gateway
-cfgtxttxi,Hostname,Hostname,Hostnaam
-cfgtxttxj,Primary DNS,Primärer DNS,Primaire DNS
-cfgtxttxk,Secondary DNS,Sekundär. DNS,Secundaire DNS
-cfgtxtrda,Obtain an IP address automatically,IP Adresse automatisch zuweisen,IP-adres automatisch verkrijgen
-cfgtxtrdb,Use the following IP address ,IP Adresse manuell zuweisen,Gebruik het volgende IP-adres
-cfgtxtrdc,Obtain DNS server addresses automatically,DNS Server automatisch setzen,DNS-adressen automatisch verkrijgen
-cfgtxtrdd,Use the following DNS server addresses ,DNS Server manuell setzen,Gebruik de volgende DNS-adressen
-cfgerrtxt0,Wrong IP format,Falsches IP Format,Ongeldig IP-formaat
-cfgerrtxt1,Please enter a correct,Bitte eine Zahl zwischen,Voer een geldig
-cfgerrtxt2,number between 0 and 255.,0 und 255 eingeben.,getal in tussen 0 en 255.
+labels,ENG,DEU,NLD,SPA,TUR,POR,ITA
+### pack0,51,1059
+prgtxtoky,Ok,Ok,OK,Aceptar,Ok,Ok,Ok
+prgtxtcnc,Cancel,Abbruch,Annuleer,Cancelar,İptal,Cancelar,Annulla
+stamentxt1,File,Datei,Bestand,Archivo,Dosya,Arquivo,File
+stamentxt2,?,?,?,?,?,?,?
+stamentxt11, Hide on startup, Beim Start ausblenden, Verbergen bij opstarten, Ocultar al iniciar, Başlarken gizle, Ocultar ao iniciar, Nascondi all'avvio
+stamentxt12, Reset all connections, Alle Verbindungen trennen, Alle verbindingen resetten, Resetear todas las conexiones, Tüm bağlantıları sıfırla, Redefinir conexões, Resetta tutte le connessioni
+stamentxt13, Quit, Beenden, Afsluiten, Quitar, Çıkış, Sair, Esci
+stamentxt21, Index, Hilfethemen, Index, Índice, Dizin, Índice, Indice
+stamentxt22, About, Info, Over, Info, Hakkında, Sobre, Info
+statxttit,Network daemon,Network Daemon,Netwerkdaemon,Servicio de Red,Ağ servisi,Network Daemon,Servizio di rete
+statxtbta,Hide,Ausblenden,Verbergen,Ocultar,Gizle,Ocultar,Nascondi
+statxtbtb,Network settings,Einstellungen,Netwerkinstellingen,Opciones de Red,Ağ ayarları,Configurações,Impostazioni direte
+statxtbtc,Apply,Überneh.,Toepassen,Aplicar,Uygula,Aplicar,Applica
+statxttba1,Status,Status,Status,Estado,Durum,Status,Status
+statxttba3,Driver,Treiber,Stuurprogramma,Driver,Sürücü,Driver,Driver
+statxtfra,Network status,Netzwerk Status,Netwerkstatus,Estado de Red,Ağ durumu,Status da rede,Stato della rete
+statxttxc,Status,Status,Status,Estado,Durum,Status,Stato
+statxttxd,Connections,Verbindungen,Verbindingen,Conexiones,Bağlantılar,Conexões,Connessioni
+statxttxe,Maximum,Maximal,Maximum,Máximo,Maksimum,Máximo,Massimo
+statxttxf,Sent,Gesendet,Verzonden,Enviado,Gönderildi,Enviado,Inviato
+statxttxg,Received,Empfangen,Ontvangen,Recibido,Alındı,Recebido,Ricevuto
+statxttxh,Type,Typ,Type,Teclear,Tip,Tipo,Tipo
+statxttxh1,Manually set,Manuell gesetzt,Handmatig,Manualmente ,Elle ayarla,Manual,Manualmente
+statxtfrb,IP settings,IP Einstellungen,IP-instellingen,Opciones de IP,IP ayarları,Configurações de IP,IP setup
+statxtfrc,DNS settings,DNS Einstellungen,DNS-instellingen,Opciones de DNS,DNS ayarları,Configurações de DNS,DNS setup
+statxtfrd,Status,Status,Status,Estado,Durum,Status,Stato
+statxtfre,DenYoNet Settings,DenYoNet Einstellungen,DenYoNet-instellingen,Opciones de DenYoNet,DenYoNet Ayarları,Configurações DenYoNet,Impostazioni DenYoNet
+statxtfrf,Localhost Settings,Localhost Einstellungen,Localhost-instellingen ,Opciones de servidor local,Localhost Ayarları,Configurações de Localhost,Impostazioni Localhost
+statxtfrg,GR8NET Settings,GR8NET Einstellungen,GR8NET-instellingen,Opciones de GR8NET,GR8NET Ayarları,Configurações GR8NET,GR8NET Impostazioni
+statxtfrh,M4 Board Settings,M4 Board Einstellungen,M4 Board-instellingen,Opciones de Tarjeta M4,M4 Board Ayarları,Configurações M4 Board,M4 Board Impostazioni
+statxtfri,Net4CPC Settings,Net4CPC Einstellungen,Net4CPC-instellingen,Opciones de Net4CPC,Net4CPC Ayarları,Configurações Net4CPC,Net4CPC Impostazioni
+cfgtxttit,TCP/IP properties,TCP/IP Eigenschaften,TCP/IP-eigenschappen,Propiedades de TCP/IP,TCP/IP Ayarları,Propriedades TCP/IP,Proprietà TCP/IP
+cfgtxttba1,IP address,IP Adresse,IP-adres,Dirección IP,IP adresi,Endereço IP,Indirizzo IP
+cfgtxttba2,DNS & Hostname,DNS & Hostname,DNS & Hostnaam,DNS y Nombre del servidor,DNS & Ana Bilgisayar,DNS e Nome do host,DNS & Nome Host
+cfgtxttxa,You can get IP settings assigned automatically,IP Adressen können automatisch zugewiesen,IP-instellingen kunnen automatisch worden,Se asignarán automáticamente las opciones,"Ağınız bu özelliği destekliyorsa,",As configurações de IP podem ser atribuídas,Se la tua rete lo supporta puoi
+cfgtxttxb,if your network supports this capability.,werden. Wenn das Netzwerk dies nicht,toegewezen als je netwerk dit ondersteunt.,de IP si es soportado por tu red.,IP ayarlarını otomatik olarak atayabilirsiniz.,automaticamente se sua rede suportar.,ottenere l'ìindirizzo IP automaticamente
+cfgtxttxc,"Otherwise, you need to ask your network admin",unterstützt muß die korrekte IP-Einstellung,Anders vraag je je netwerkbeheerder,"Si no, debes pedir las opciones de IP","Aksi takdirde, uygun IP ayarları için ağ","Caso contrário, você precisa solicitar ao",Altrimenti devi richiedere l'IP al
+cfgtxttxd,for the appropriate IP settings.,beim Netzwerk-Administrator erfragt werden.,om de juiste IP-instellingen.,necesarias al administrador.,yöneticinize danışmanız gerekir.,administrador as configurações de IP corretas.,tuo amministratore di rete.
+cfgtxttxf,IP address,IP Adresse,IP-adres,Dirección IP,IP adresi,Endereço IP,Indirizzo IP
+cfgtxttxg,Subnet mask,Subnetz Maske,Subnet,Subred,Alt ağ maskesi,Sub-rede,Subnet
+cfgtxttxh,Default gateway,Gateway,Gateway,Gateway,Ağ geçidi,Gateway padrão,Gateway
+cfgtxttxi,Hostname,Hostname,Hostnaam,Host,Ana bilgisayar adı,Nome do host,Nome Host
+cfgtxttxj,Primary DNS,Primärer DNS,Primaire DNS,DNS Primaria,Birincil DNS,DNS primário,DNS primario
+cfgtxttxk,Secondary DNS,Sekundär. DNS,Secundaire DNS,DNS Sec.,İkincil DNS,DNS secundário,DNS secondario
+cfgtxtrda,Obtain an IP address automatically,IP Adresse automatisch zuweisen,IP-adres automatisch verkrijgen,IP automática ,IP adresini otomatik olarak al,Obter endereço IP automaticamente,Ottieni automaticamente l'indirizzo IP
+cfgtxtrdb,Use the following IP address ,IP Adresse manuell zuweisen,Gebruik het volgende IP-adres,Usar la siguiente dirección IP,Aşağıdaki IP adresini kullan,Usar o seguinte endereço IP ,Usa il seguente indirizzo IP
+cfgtxtrdc,Obtain DNS server addresses automatically,DNS Server automatisch setzen,DNS-adressen automatisch verkrijgen,DNS automático ,DNS sunucu adreslerini otomatik olarak al,Obter endereços DNS automaticamente,Ottieni automaticamente l'indirizzo DNS
+cfgtxtrdd,Use the following DNS server addresses ,DNS Server manuell setzen,Gebruik de volgende DNS-adressen,Usar la siguiente dirección de servidor DNS,Aşağıdaki DNS sunucu adreslerini kullan,Usar os seguintes endereços DNS ,Usa il seguente indirizzo DNS
+cfgerrtxt0,Wrong IP format,Falsches IP Format,Ongeldig IP-formaat,Formato de IP incorrecto,Yanlış IP formatı,Formato de IP inválido,Formato IP errato
+cfgerrtxt1,Please enter a correct,Bitte eine Zahl zwischen,Voer een geldig,"Por favor, introduzca un número",Lütfen 0 ile 255 arasında,"Por favor, insira um número",Inserisci un valore
+cfgerrtxt2,number between 0 and 255.,0 und 255 eingeben.,getal in tussen 0 en 255.,correcto entre 0 y 255.,bir sayı girin.,correto entre 0 e 255.,compreso fra 0 e 255
